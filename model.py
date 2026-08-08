@@ -74,3 +74,11 @@ for epoch in range(epochs):
             test_loss_total += loss
         test_loss_total /= len(test_loader)
         eval_losses.append(test_loss_total)
+
+plt.plot(range(epochs), train_losses, label="train")
+plt.plot(range(epochs), eval_losses, label="test")
+plt.title("train and test losses")
+plt.xlabel("epoch")
+plt.ylabel("loss")
+plt.legend()
+plt.show()
