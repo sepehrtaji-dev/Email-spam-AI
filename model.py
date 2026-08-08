@@ -41,3 +41,36 @@ class ClassficModel(nn.Module):
         x = self.relu(self.fc5(x))
         x = self.fc6(x)
         return x
+
+epochs = 100
+train_losses = []
+eval_losses = []
+model = ClassficModel(x_train_tensor.shape[1])
+cirtersion = nn.BCEWithLogitsLoss()
+optim = torch.optim.Adam(model.parameters(), lr=.001)
+
+for epoch in range(epochs):
+    model.train()
+    train_loss_total = 0
+    for batch_x, batch_y in train_loader:
+        batch_x = batch_x.to(device)
+        batch_y = batch_y.to(device)
+        y_pred = model(batch_x)
+        loss = cirtersion(y_pred, batch_y)
+        optim.zero_grad()
+        loss.backward()
+        optim.step()
+        train_loss_total += loss
+    train_loss_total /= len(train_loader)
+    train_losses.append(train_loss_total)
+    model.eval()
+    test_loss_total = 0
+    with torch.no_grad():
+        for batch_x, batch_y in test_loader:
+            batch_x = batch_x.to(device)
+            batch_y = batch_y.to(device)
+            y_pred = model(batch_x)
+            loss = cirtersion(y_pred, batch_y)
+            test_loss_total += loss
+        test_loss_total /= len(test_loader)
+        eval_losses.append(test_loss_total)
